@@ -43,8 +43,9 @@ namespace _xcsoft__ALL_IN_ONE
 
             Menu.SubMenu("Drawings").AddItem(new MenuItem("blank1", string.Empty));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("txt1", "--PUBLIC OPTIONS--"));
-            
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawTarget", "Auto-attack Target").SetValue(true));
+
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawAARange", "Auto-Attack Real Range").SetValue(new Circle(true, Color.Silver)));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawAATarget", "Auto-Attack Target").SetValue(new Circle(true, Color.Red)));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawMinionLastHit", "Minion Last Hit").SetValue(new Circle(true, Color.GreenYellow)));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawMinionNearKill", "Minion Near Kill").SetValue(new Circle(true, Color.Gray)));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawJunglePosition", "Jungle Position").SetValue(true));
@@ -76,7 +77,7 @@ namespace _xcsoft__ALL_IN_ONE
 
             if (Game.MapId == (GameMapId)11 && Menu.Item("drawJunglePosition").GetValue<Boolean>())
             {
-                const Single circleRadius = 100f;
+                const byte circleRadius = 100;
 
                 Render.Circle.DrawCircle(new SharpDX.Vector3(7461.018f, 3253.575f, 52.57141f), circleRadius, Color.Blue, 5); // blue team: red
                 Render.Circle.DrawCircle(new SharpDX.Vector3(3511.601f, 8745.617f, 52.57141f), circleRadius, Color.Blue, 5); // blue team: blue
@@ -93,12 +94,18 @@ namespace _xcsoft__ALL_IN_ONE
                 Render.Circle.DrawCircle(new SharpDX.Vector3(7001.741f, 9915.717f, 54.02466f), circleRadius, Color.Red, 5); // red team: wariaths                    
             }
 
-            if (Menu.Item("drawTarget").GetValue<Boolean>())
+            var drawAA = Menu.Item("drawAARange").GetValue<Circle>();
+            var drawTarget = Menu.Item("drawAATarget").GetValue<Circle>();
+
+            if (drawAA.Active)
+                Render.Circle.DrawCircle(Player.Position, Orbwalking.GetRealAutoAttackRange(Player), drawAA.Color);
+
+            if (drawTarget.Active)
             {
                 var aaTarget = Orbwalker.GetTarget();
 
                 if (aaTarget != null)
-                    Render.Circle.DrawCircle(aaTarget.Position, aaTarget.BoundingRadius + 15, Color.Red, 6);
+                    Render.Circle.DrawCircle(aaTarget.Position, aaTarget.BoundingRadius + 15, drawTarget.Color, 6);
             }
         }
     }

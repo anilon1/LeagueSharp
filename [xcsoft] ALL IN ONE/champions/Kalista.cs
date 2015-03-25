@@ -50,7 +50,6 @@ namespace _xcsoft__ALL_IN_ONE.champions
             Menu.SubMenu("Misc").AddItem(new MenuItem("lasthitassist", "Use Lasthit Assist (With E)", true).SetValue(true));
             Menu.SubMenu("Misc").AddItem(new MenuItem("soulboundsaver", "Use Soulbound Saver (With R)", true).SetValue(true));
 
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawAA", "Real AA Range", true).SetValue(new Circle(true, Color.FromArgb(0, 230, 255))));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawQ", "Q Range", true).SetValue(new Circle(true, Color.FromArgb(0, 230, 255))));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawW", "W Range", true).SetValue(new Circle(false, Color.FromArgb(0, 230, 255))));
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawE", "E Range", true).SetValue(new Circle(true, Color.FromArgb(0, 230, 255))));
@@ -77,13 +76,13 @@ namespace _xcsoft__ALL_IN_ONE.champions
                 DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
             };
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Orbwalking.OnNonKillableMinion += Orbwalking_OnNonKillableMinion;
         }
 
-        static void Game_OnGameUpdate(EventArgs args)
+        static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
                 return;
@@ -109,14 +108,10 @@ namespace _xcsoft__ALL_IN_ONE.champions
             if (Player.IsDead)
                 return;
 
-            var drawingAA = Menu.Item("drawingAA", true).GetValue<Circle>();
-            var drawingQ = Menu.Item("drawingQ", true).GetValue<Circle>();
-            var drawingW = Menu.Item("drawingW", true).GetValue<Circle>();
-            var drawingE = Menu.Item("drawingE", true).GetValue<Circle>();
-            var drawingR = Menu.Item("drawingR", true).GetValue<Circle>();
-
-            if (drawingAA.Active)
-                Render.Circle.DrawCircle(Player.Position, Orbwalking.GetRealAutoAttackRange(Player), drawingAA.Color);
+            var drawingQ = Menu.Item("drawQ", true).GetValue<Circle>();
+            var drawingW = Menu.Item("drawW", true).GetValue<Circle>();
+            var drawingE = Menu.Item("drawE", true).GetValue<Circle>();
+            var drawingR = Menu.Item("drawR", true).GetValue<Circle>();
 
             if (Q.IsReady() && drawingQ.Active)
                 Render.Circle.DrawCircle(Player.Position, Q.Range, drawingQ.Color);

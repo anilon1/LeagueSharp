@@ -31,7 +31,7 @@
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
@@ -80,6 +80,7 @@
     <Compile Include="champions\_Annie.cs" />
     <Compile Include="champions\_Ashe.cs" />
     <Compile Include="champions\_Azir.cs" />
+    <Compile Include="champions\_Bard.cs" />
     <Compile Include="champions\_Blitzcrank.cs" />
     <Compile Include="champions\_Brand.cs" />
     <Compile Include="champions\_Braum.cs" />
@@ -194,7 +195,7 @@
     <Compile Include="champions\_Ziggs.cs" />
     <Compile Include="champions\_Zilean.cs" />
     <Compile Include="champions\_Zyra.cs" />
-    <Compile Include="champions\_base_.cs" />
+    <Compile Include="champions\__BASE.cs" />
     <Compile Include="damageIndicator.cs" />
     <Compile Include="initializer.cs" />
     <Compile Include="Program.cs" />
