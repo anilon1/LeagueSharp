@@ -36,9 +36,9 @@ namespace _xcsoft__Information
             Menu.AddToMainMenu();
 
             Menu.AddItem(new MenuItem("switch", "Switch")).SetValue<Boolean>(true);
-            Menu.AddItem(new MenuItem("x", "X")).SetValue<Slider>(new Slider(150 ,0 , Drawing.Width));
-            Menu.AddItem(new MenuItem("y", "Y")).SetValue<Slider>(new Slider(30 ,0 , Drawing.Height));
-            Menu.AddItem(new MenuItem("size", "Size")).SetValue<Slider>(new Slider(14, 10, 20));
+            Menu.AddItem(new MenuItem("x", "X")).SetValue<Slider>(new Slider(250 ,0 , Drawing.Width));
+            Menu.AddItem(new MenuItem("y", "Y")).SetValue<Slider>(new Slider(0 ,0 , Drawing.Height));
+            Menu.AddItem(new MenuItem("size", "Size")).SetValue<Slider>(new Slider(11, 10, 20));
 
             Menu.Item("x").ValueChanged +=
                 delegate(object sender, OnValueChangeEventArgs eventArgs)
@@ -110,7 +110,7 @@ namespace _xcsoft__Information
                 "RealAutoAttackRange: " + Orbwalking.GetRealAutoAttackRange(Target) + NewLine +
                 "DeathDuration: " + Target.DeathDuration + NewLine +
                 "BoundingRadius: " + Target.BoundingRadius + NewLine +
-                "Spells: " + "Q: " + Player.Spellbook.GetSpell(SpellSlot.Q).Name + ", W: " + Player.Spellbook.GetSpell(SpellSlot.W).Name + ", E: " + Player.Spellbook.GetSpell(SpellSlot.E).Name + ", R: " + Player.Spellbook.GetSpell(SpellSlot.R).Name + NewLine +
+                "Spells Name: " + "Q: " + Player.Spellbook.GetSpell(SpellSlot.Q).Name + ", W: " + Player.Spellbook.GetSpell(SpellSlot.W).Name + ", E: " + Player.Spellbook.GetSpell(SpellSlot.E).Name + ", R: " + Player.Spellbook.GetSpell(SpellSlot.R).Name + NewLine +
                 NewLine +
                 "Buffs: " + buffs + NewLine +
                 NewLine +
