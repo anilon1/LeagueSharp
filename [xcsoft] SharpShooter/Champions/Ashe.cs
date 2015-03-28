@@ -17,8 +17,6 @@ namespace Sharpshooter.Champions
 
         static Spell Q, W, E, R;
 
-        static Obj_AI_Hero rTarget;
-
         static bool QisActive { get { return Player.HasBuff("FrostShot", true); } }
 
         public static void Load()

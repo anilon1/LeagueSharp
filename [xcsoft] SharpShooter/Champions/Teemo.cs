@@ -13,7 +13,7 @@ namespace Sharpshooter.Champions
         static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         static Orbwalking.Orbwalker Orbwalker { get { return SharpShooter.Orbwalker; } }
 
-        static Spell Q, W, E, R;
+        static Spell Q, W, R;
 
         public static void Load()
         {
