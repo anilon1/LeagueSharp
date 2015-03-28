@@ -70,7 +70,7 @@ namespace _xcsoft__Information
 
             Target = TargetSelector.GetSelectedTarget() != null ? TargetSelector.GetSelectedTarget() : Player;
             
-            var buffs = "Null";
+            var buffs = string.Empty;
 
             foreach (var buff in Target.Buffs)
             {
@@ -78,7 +78,7 @@ namespace _xcsoft__Information
             }
 
             var Mobs = MinionManager.GetMinions(1500, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.MaxHealth);
-            var MobsList = "Null";
+            var MobsList = string.Empty;
 
             foreach (var Mob in Mobs)
             {
@@ -110,6 +110,7 @@ namespace _xcsoft__Information
                 "RealAutoAttackRange: " + Orbwalking.GetRealAutoAttackRange(Target) + NewLine +
                 "DeathDuration: " + Target.DeathDuration + NewLine +
                 "BoundingRadius: " + Target.BoundingRadius + NewLine +
+                "Spells: " + "Q: " + Player.Spellbook.GetSpell(SpellSlot.Q).Name + ", W: " + Player.Spellbook.GetSpell(SpellSlot.W).Name + ", E: " + Player.Spellbook.GetSpell(SpellSlot.E).Name + ", R: " + Player.Spellbook.GetSpell(SpellSlot.R).Name + NewLine +
                 NewLine +
                 "Buffs: " + buffs + NewLine +
                 NewLine +
