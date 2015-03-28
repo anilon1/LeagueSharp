@@ -160,13 +160,11 @@ namespace xc_TwistedFate
 
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
             Obj_AI_Hero.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnPossibleToInterrupt += Interrupter_OnPossibleToInterrupt;
-            GameObject.OnCreate += GameObject_OnCreate;
-            GameObject.OnDelete += GameObject_OnDelete;
 
             Orbwalker.SetMovement(!Menu.Item("movement").GetValue<bool>());
 
@@ -221,12 +219,9 @@ namespace xc_TwistedFate
         {
             if (args.Target is Obj_AI_Hero || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
                 args.Process = CardSelector.Status != SelectStatus.Selecting && Environment.TickCount - CardSelector.LastWSent > 300;
-
-            if (!DetectCollision(args.Target))
-                args.Process = false;
         }
 
-        static void Game_OnGameUpdate(EventArgs args)
+        static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
                 return;
@@ -443,7 +438,7 @@ namespace xc_TwistedFate
 
                     if (Menu.Item("cconly").GetValue<bool>())
                     {
-                        if (pred.Hitchance >= HitChance.High && DetectCollision(target))
+                        if (pred.Hitchance >= HitChance.High)
                         {
                             foreach (var buff in target.Buffs)
                             {
@@ -452,7 +447,7 @@ namespace xc_TwistedFate
                             }
                         }
                     }
-                    else if (pred.Hitchance >= HitChance.VeryHigh && DetectCollision(target))
+                    else if (pred.Hitchance >= HitChance.VeryHigh)
                         Q.Cast(target, Menu.Item("usepacket").GetValue<bool>());
                 }
             }
@@ -464,7 +459,7 @@ namespace xc_TwistedFate
 
             if (Q.IsReady() && Menu.Item("harassUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("harassmana").GetValue<Slider>().Value)
             {
-                if (target.IsValidTarget(Menu.Item("harassrange").GetValue<Slider>().Value) && Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh && DetectCollision(target))
+                if (target.IsValidTarget(Menu.Item("harassrange").GetValue<Slider>().Value) && Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                     Q.Cast(target);
             }
         }
@@ -613,7 +608,7 @@ namespace xc_TwistedFate
                 {
                     if (Q.GetDamage(target) >= target.Health + 20 & Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                     {
-                        if (Q.IsReady() && DetectCollision(target))
+                        if (Q.IsReady())
                             Q.Cast(target, Menu.Item("usepacket").GetValue<bool>());
                     }
                 }
@@ -631,38 +626,6 @@ namespace xc_TwistedFate
                     Player.Spellbook.CastSpell(SIgnite, target);
                 }
             }
-        }
-
-        private static void GameObject_OnCreate(GameObject obj, EventArgs args)
-        {
-            if (Player.Distance(obj.Position) > 1500 || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return;
-
-            if (obj.IsValid &&System.Text.RegularExpressions.Regex.IsMatch(obj.Name, "_w_windwall.\\.troy",System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-                _yasuoWall = obj;
-        }
-
-        private static void GameObject_OnDelete(GameObject obj, EventArgs args)
-        {
-            if (Player.Distance(obj.Position) > 1500 || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return;
-
-            if (obj.IsValid && System.Text.RegularExpressions.Regex.IsMatch(obj.Name, "_w_windwall.\\.troy",System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-                _yasuoWall = null;
-        }
-
-        private static bool DetectCollision(GameObject target)
-        {
-            if (_yasuoWall == null || !ObjectManager.Get<Obj_AI_Hero>().Any(h => h.ChampionName == "Yasuo" && h.IsEnemy && h.IsVisible && !h.IsDead)) return true;
-
-            var level = _yasuoWall.Name.Substring(_yasuoWall.Name.Length - 6, 1);
-            var wallWidth = (300 + 50 * Convert.ToInt32(level));
-            var wallDirection = (_yasuoWall.Position.To2D() - _yasuoWallCastedPos).Normalized().Perpendicular();
-            var wallStart = _yasuoWall.Position.To2D() + ((int)(wallWidth / 2)) * wallDirection;
-            var wallEnd = wallStart - wallWidth * wallDirection;
-
-            var intersection = wallStart.Intersection(wallEnd, Player.Position.To2D(), target.Position.To2D());
-
-            return !intersection.Point.IsValid();
-
         }
     }
 }

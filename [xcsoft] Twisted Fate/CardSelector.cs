@@ -36,7 +36,7 @@ namespace xc_TwistedFate
         static CardSelector()
         {
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
         }
 
         public static SelectStatus Status { get; set; }
@@ -62,7 +62,7 @@ namespace xc_TwistedFate
             }
         }
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnUpdate(EventArgs args)
         {
             var wName = ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Name;
             var wState = ObjectManager.Player.Spellbook.CanUseSpell(SpellSlot.W);
