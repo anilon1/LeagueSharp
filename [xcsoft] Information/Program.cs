@@ -88,11 +88,11 @@ namespace _xcsoft__Information
             Render.Circle.DrawCircle(Player.Position, 1500, Color.Red, 10);
 
             Text.text =
-                "Name: " + Target.Name + NewLine +
+                //"Name: " + Target.Name + NewLine +
                 "ChampionName: " + Target.ChampionName + NewLine +
                 "SkinName: " + Target.SkinName + NewLine +
-                "Gold: " + Target.Gold + NewLine +
-                "Level: " + Target.Level + NewLine +
+                //"Gold: " + Target.Gold + NewLine +
+                //"Level: " + Target.Level + NewLine +
                 "TotalAttackDamage: " + Utility.TotalAttackDamage(Target) + NewLine +
                 "TotalMagicalDamage: " + Utility.TotalMagicalDamage(Target) + NewLine +
                 "Armor: " + Target.Armor + NewLine +
@@ -108,7 +108,7 @@ namespace _xcsoft__Information
                 "MoveSpeed: " + Target.MoveSpeed + NewLine +
                 "AttackRange: " + Target.AttackRange + NewLine +
                 "RealAutoAttackRange: " + Orbwalking.GetRealAutoAttackRange(Target) + NewLine +
-                "DeathDuration: " + Target.DeathDuration + NewLine +
+                //"DeathDuration: " + Target.DeathDuration + NewLine +
                 "BoundingRadius: " + Target.BoundingRadius + NewLine +
                 "Spells Name: " + "Q: " + Player.Spellbook.GetSpell(SpellSlot.Q).Name + ", W: " + Player.Spellbook.GetSpell(SpellSlot.W).Name + ", E: " + Player.Spellbook.GetSpell(SpellSlot.E).Name + ", R: " + Player.Spellbook.GetSpell(SpellSlot.R).Name + NewLine +
                 NewLine +

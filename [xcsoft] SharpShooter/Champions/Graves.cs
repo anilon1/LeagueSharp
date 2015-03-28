@@ -19,7 +19,7 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 850f);
+            Q = new Spell(SpellSlot.Q, 720f);
             W = new Spell(SpellSlot.W, 850f);
             E = new Spell(SpellSlot.E, 425f);
             R = new Spell(SpellSlot.R, 1100f);
@@ -44,7 +44,7 @@ namespace Sharpshooter.Champions
             SharpShooter.Menu.SubMenu("Jungleclear").AddItem(new MenuItem("jungleclearUseQ", "Use Q", true).SetValue(true));
             SharpShooter.Menu.SubMenu("Jungleclear").AddItem(new MenuItem("jungleclearMana", "if Mana % >", true).SetValue(new Slider(20, 0, 100)));
 
-            SharpShooter.Menu.SubMenu("Misc").AddItem(new MenuItem("empty1", "Empty", true));
+            SharpShooter.Menu.SubMenu("Misc").AddItem(new MenuItem("miscKs", "Use Killsteal", true).SetValue(true));
 
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingAA", "Real AA Range", true).SetValue(new Circle(true, Color.FromArgb(183, 0, 0))));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingQ", "Q Range", true).SetValue(new Circle(true, Color.FromArgb(183, 0, 0))));
@@ -94,6 +94,9 @@ namespace Sharpshooter.Champions
                 Laneclear();
                 Jungleclear();
             }
+
+            if (SharpShooter.Menu.Item("miscKs", true).GetValue<Boolean>())
+                Killsteal();
         }
 
         static void Drawing_OnDraw(EventArgs args)
@@ -243,6 +246,21 @@ namespace Sharpshooter.Champions
             {
                 if(Q.CanCast(Mobs[0]))
                     Q.Cast(Mobs[0]);
+            }
+        }
+
+        static void Killsteal()
+        {
+            foreach (var target in HeroManager.Enemies.OrderByDescending(x => x.Health))
+            {
+                if (Q.IsReady() && target.IsValidTarget(850f) && Q.IsKillable(target))
+                    Q.Cast(target);
+
+                if (W.CanCast(target) && W.IsKillable(target))
+                    W.Cast(target);
+
+                if (R.CanCast(target) && R.IsKillable(target))
+                    R.Cast(target);
             }
         }
     }
