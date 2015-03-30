@@ -13,19 +13,18 @@ namespace xc_TwistedFate
 {
     internal class Program
     {
-        private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
+        static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
 
-        private static Orbwalking.Orbwalker Orbwalker;
+        static Orbwalking.Orbwalker Orbwalker;
 
-        private static Spell Q, W;
+        static Spell Q, W;
 
-        private static Menu Menu;
+        static Menu Menu;
 
-        private static SpellSlot SFlash;
-        private static SpellSlot SIgnite;
+        static SpellSlot SFlash;
+        static SpellSlot SIgnite;
 
-        private static Vector2 _yasuoWallCastedPos;
-        private static GameObject _yasuoWall;
+        static float getManaPer { get { return Player.Mana / Player.MaxMana * 100; } }
 
         static void Main(string[] args)
         {
@@ -260,11 +259,6 @@ namespace xc_TwistedFate
             {
                 CardSelector.StartSelecting(Cards.Yellow);
             }
-
-            if (sender.IsEnemy && args.SData.Name == "YasuoWMovingWall")
-            {
-                _yasuoWallCastedPos = sender.ServerPosition.To2D();
-            }
         }
 
         static void Drawing_OnDraw(EventArgs args)
@@ -374,7 +368,7 @@ namespace xc_TwistedFate
             {
                 var targetpos = Drawing.WorldToScreen(Player.Position);
                 var color = Color.Green;
-                var manaper = (int)Utility.ManaPercentage(Player);
+                var manaper = getManaPer;
 
                 if (manaper > 75)
                     color = Color.LightGreen;
@@ -385,7 +379,7 @@ namespace xc_TwistedFate
                 else if (manaper > -1)
                     color = Color.Red;
 
-                Drawing.DrawText(targetpos[0] - 40, targetpos[1] + 20, color, "Mana:" + manaper + "%");
+                Drawing.DrawText(targetpos[0] - 40, targetpos[1] + 20, color, "Mana:" + manaper.ToString("0.0") + "%");
             }
 
             if (Menu.Item("kill").GetValue<bool>())
@@ -420,7 +414,7 @@ namespace xc_TwistedFate
                 {
                     if (Menu.Item("useblue").GetValue<bool>())
                     {
-                        if (Utility.ManaPercentage(Player) < 20)
+                        if (getManaPer < 20)
                             CardSelector.StartSelecting(Cards.Blue);
                         else
                             CardSelector.StartSelecting(Cards.Yellow);
@@ -457,7 +451,7 @@ namespace xc_TwistedFate
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
-            if (Q.IsReady() && Menu.Item("harassUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("harassmana").GetValue<Slider>().Value)
+            if (Q.IsReady() && Menu.Item("harassUseQ").GetValue<bool>() && getManaPer > Menu.Item("harassmana").GetValue<Slider>().Value)
             {
                 if (target.IsValidTarget(Menu.Item("harassrange").GetValue<Slider>().Value) && Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                     Q.Cast(target);
@@ -470,7 +464,7 @@ namespace xc_TwistedFate
             {
                 if (Menu.Item("lasthitUseW").GetValue<bool>())
                 {
-                    if (Utility.ManaPercentage(Player) < Menu.Item("lasthitbluemana").GetValue<Slider>().Value)
+                    if (getManaPer < Menu.Item("lasthitbluemana").GetValue<Slider>().Value)
                     {
                         var xMinions = MinionManager.GetMinions(Player.Position, 700, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
 
@@ -488,7 +482,7 @@ namespace xc_TwistedFate
 
         static void LaneClear()
         {
-            if (Q.IsReady() && Menu.Item("laneclearUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("laneclearQmana").GetValue<Slider>().Value)
+            if (Q.IsReady() && Menu.Item("laneclearUseQ").GetValue<bool>() && getManaPer > Menu.Item("laneclearQmana").GetValue<Slider>().Value)
             {
                 var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
                 var locQ = Q.GetLineFarmLocation(allMinionsQ);
@@ -503,7 +497,7 @@ namespace xc_TwistedFate
 
                 if (minioncount > 0)
                 {
-                    if (Utility.ManaPercentage(Player) > Menu.Item("laneclearbluemana").GetValue<Slider>().Value)
+                    if (getManaPer > Menu.Item("laneclearbluemana").GetValue<Slider>().Value)
                     {
                         if (minioncount >= Menu.Item("laneclearredmc").GetValue<Slider>().Value)
                             CardSelector.StartSelecting(Cards.Red);
@@ -523,14 +517,14 @@ namespace xc_TwistedFate
             if (mobs.Count <= 0)
                 return;
 
-            if (Q.IsReady() && Menu.Item("jungleclearUseQ").GetValue<bool>() && Utility.ManaPercentage(Player) > Menu.Item("jungleclearQmana").GetValue<Slider>().Value)
+            if (Q.IsReady() && Menu.Item("jungleclearUseQ").GetValue<bool>() && getManaPer > Menu.Item("jungleclearQmana").GetValue<Slider>().Value)
             {
                 Q.Cast(mobs[0].Position, Menu.Item("usepacket").GetValue<bool>());
             }
 
             if (W.IsReady() && Menu.Item("jungleclearUseW").GetValue<bool>())
             {
-                if (Utility.ManaPercentage(Player) > Menu.Item("jungleclearbluemana").GetValue<Slider>().Value)
+                if (getManaPer > Menu.Item("jungleclearbluemana").GetValue<Slider>().Value)
                 {
                     if (mobs.Count >= 2)
                         CardSelector.StartSelecting(Cards.Red);
