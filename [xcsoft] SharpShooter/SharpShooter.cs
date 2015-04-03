@@ -14,6 +14,8 @@ namespace Sharpshooter
 
         internal static Menu Menu;
 
+        internal static float getManaPer { get { return Player.Mana / Player.MaxMana * 100; } }
+
         internal static void Load()
         {
             try 
