@@ -15,6 +15,7 @@ namespace ZoomHack
         static void Game_OnGameLoad(EventArgs args)
         {
             Hacks.ZoomHack = true;
+            Game.PrintChat("[xcsoft: ProbablyUnsafe] ZoomHack is Enabled");
         }
     }
 }
