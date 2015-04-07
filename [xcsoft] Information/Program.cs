@@ -20,9 +20,11 @@ namespace _xcsoft__Information
 
         static Render.Text Text;
 
-        static string Font = "monospace";
+        const string Font = "monospace";
 
-        static readonly string NewLine = "\n";
+        const string NewLine = "\n";
+
+        static Spell Q, W, E, R;
 
         static void Main(string[] args)
         {
@@ -31,6 +33,11 @@ namespace _xcsoft__Information
 
         static void Game_OnGameLoad(EventArgs args)
         {
+            Q = new Spell(SpellSlot.Q);
+            W = new Spell(SpellSlot.W);
+            E = new Spell(SpellSlot.E);
+            R = new Spell(SpellSlot.R);
+
             Menu = new Menu("[xcsoft] Information", "xcsoft_information", true);
             TargetSelector.AddToMenu(Menu.AddSubMenu(new Menu("Target Selector", "Target Selector")));
             Menu.AddToMainMenu();
@@ -82,7 +89,7 @@ namespace _xcsoft__Information
 
             foreach (var Mob in Mobs)
             {
-                MobsList += "\n" + Mob.Name + "[Skinname: " + Mob.SkinName + "/HP: " + Mob.Health + " / " + Mob.MaxHealth + "(" + Mob.HealthPercentage().ToString("0.00") + "%)],";
+                MobsList += "\n" + Mob.Name + "[Skinname: " + Mob.SkinName + "/HP: " + Mob.Health + " / " + Mob.MaxHealth + "(" + Mob.HealthPercent.ToString("0.0") + "%)],";
             }
 
             Render.Circle.DrawCircle(Player.Position, 1500, Color.Red, 10);
@@ -96,8 +103,8 @@ namespace _xcsoft__Information
                 "TotalAttackDamage: " + Utility.TotalAttackDamage(Target) + NewLine +
                 "TotalMagicalDamage: " + Utility.TotalMagicalDamage(Target) + NewLine +
                 "Armor: " + Target.Armor + NewLine +
-                "Health: " + Target.Health + " / " + Target.MaxHealth + " (" + Target.HealthPercentage() + "%)" + NewLine +
-                "Mana: " + Target.Mana + " / " + Target.MaxMana + " (" + Target.ManaPercentage() + "%)" + NewLine +
+                "Health: " + Target.Health + " / " + Target.MaxHealth + " (" + Target.HealthPercent.ToString("0.0") + "%)" + NewLine +
+                "Mana: " + Target.Mana + " / " + Target.MaxMana + " (" + Target.HealthPercent.ToString("0.0") + "%)" + NewLine +
                 "HPRegenRate: " + Target.HPRegenRate + NewLine +
                 "PARRegenRate: " + Target.PARRegenRate + NewLine +
                 "Experience: " + Target.Experience + NewLine +
@@ -110,7 +117,6 @@ namespace _xcsoft__Information
                 "RealAutoAttackRange: " + Orbwalking.GetRealAutoAttackRange(Target) + NewLine +
                 //"DeathDuration: " + Target.DeathDuration + NewLine +
                 "BoundingRadius: " + Target.BoundingRadius + NewLine +
-                "Spells Name: " + "Q: " + Player.Spellbook.GetSpell(SpellSlot.Q).Name + ", W: " + Player.Spellbook.GetSpell(SpellSlot.W).Name + ", E: " + Player.Spellbook.GetSpell(SpellSlot.E).Name + ", R: " + Player.Spellbook.GetSpell(SpellSlot.R).Name + NewLine +
                 NewLine +
                 "Buffs: " + buffs + NewLine +
                 NewLine +
