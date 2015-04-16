@@ -311,19 +311,16 @@ namespace Xerath
             var wTarget = TargetSelector.GetTarget(W.Range + W.Width * 0.5f, TargetSelector.DamageType.Magical);
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
-            if (eTarget != null && useE && E.IsReady())
+            if (eTarget != null && useE && E.IsReady() && E.GetPrediction(wTarget).Hitchance >= HitChance.High)
             {
-                if (Player.Distance(eTarget) < E.Range * 0.4f)
-                    E.Cast(eTarget);
-                else if ((!useW || !W.IsReady()))
-                    E.Cast(eTarget);
+                E.Cast(eTarget);
             }
 
             if (useQ && Q.IsReady() && qTarget != null)
             {
                 if (Q.IsCharging)
                 {
-                    if(Player.Distance(qTarget, false) + 50 > Q.ChargedMaxRange ? Q.ChargedMaxRange <= Q.Range : Player.Distance(qTarget, false) + 50 <= Q.Range && Q.GetPrediction(qTarget).Hitchance <= HitChance.High)
+                    if(Player.Distance(qTarget, false) + 20 > Q.ChargedMaxRange ? Q.ChargedMaxRange <= Q.Range : Player.Distance(qTarget, false) + 20 <= Q.Range && Q.GetPrediction(qTarget).Hitchance <= HitChance.High)
                         Q.Cast(qTarget, false, true);
                 }
                 else if (!useW || !W.IsReady() || Player.Distance(qTarget) > W.Range)
@@ -332,7 +329,7 @@ namespace Xerath
                 }
             }
 
-            if (wTarget != null && useW && W.IsReady())
+            if (wTarget != null && useW && W.IsReady() && W.GetPrediction(wTarget).Hitchance >= HitChance.High)
                 W.Cast(wTarget, false, true);
         }
 
@@ -534,10 +531,9 @@ namespace Xerath
 
         private static void Drawing_OnEndScene(EventArgs args)
         {
-            if (R.Level == 0) return;
             var menuItem = Config.Item(R.Slot + "RangeM").GetValue<Circle>();
             if (menuItem.Active)
-                Render.Circle.DrawCircle(Player.Position, R.Range, menuItem.Color, 1, true);
+                Render.Circle.DrawCircle(Player.Position, R.Range, menuItem.Color, 5);
         }
 
         private static void Drawing_OnDraw(EventArgs args)
