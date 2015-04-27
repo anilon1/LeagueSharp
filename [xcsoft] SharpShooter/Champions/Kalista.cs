@@ -19,12 +19,12 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 1180f);
+            Q = new Spell(SpellSlot.Q, 1150f);
             W = new Spell(SpellSlot.W, 5200f);
             E = new Spell(SpellSlot.E, 1000f);
             R = new Spell(SpellSlot.R, 1400f);
 
-            Q.SetSkillshot(0.25f, 40f, 1700f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 30f, 1700f, true, SkillshotType.SkillshotLine);
 
             var drawDamageMenu = new MenuItem("Draw_RDamage", "Draw (E) Damage", true).SetValue(true);
             var drawFill = new MenuItem("Draw_Fill", "Draw (E) Damage Fill", true).SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
@@ -274,8 +274,8 @@ namespace Sharpshooter.Champions
                     if (killcount >= SharpShooter.Menu.Item("laneclearQnum", true).GetValue<Slider>().Value)
                     {
                         if (!Player.IsWindingUp && !Player.IsDashing())
-                        { 
-                            Q.Cast(minion);
+                        {
+                            Q.Cast(minion.ServerPosition);
                             break;
                         }
                     }

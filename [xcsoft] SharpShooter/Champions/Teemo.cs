@@ -44,7 +44,6 @@ namespace Sharpshooter.Champions
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
-            Orbwalking.AfterAttack += Orbwalking_OnAfterAttack;
         }
 
         static void Game_OnUpdate(EventArgs args)
@@ -103,28 +102,6 @@ namespace Sharpshooter.Champions
                 W.Cast();
         }
 
-        static void Orbwalking_OnAfterAttack(AttackableUnit unit, AttackableUnit target)
-        {
-            if (!unit.IsMe || !(target.Type == GameObjectType.obj_AI_Hero))
-                return;
-
-            if(!Q.CanCast((Obj_AI_Hero)target))
-                return;
-
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            {
-                if (SharpShooter.Menu.Item("comboUseQ", true).GetValue<Boolean>())
-                    Q.Cast((Obj_AI_Hero)target);
-            }
-            else
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-            {
-                if (SharpShooter.Menu.Item("harassUseQ", true).GetValue<Boolean>())
-                    Q.Cast((Obj_AI_Hero)target);
-            }
-
-        }
-
         static void Combo()
         {
             if (!Orbwalking.CanMove(1))
@@ -134,7 +111,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(670))
+                if (Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
 
@@ -164,7 +141,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && !Qtarget.IsValidTarget(670))
+                if (Q.CanCast(Qtarget))
                     Q.Cast(Qtarget);
             }
         }
