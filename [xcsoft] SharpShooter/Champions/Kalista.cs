@@ -20,11 +20,11 @@ namespace Sharpshooter.Champions
         public static void Load()
         {
             Q = new Spell(SpellSlot.Q, 1150f);
-            W = new Spell(SpellSlot.W, 5200f);
+            W = new Spell(SpellSlot.W, 5000f);
             E = new Spell(SpellSlot.E, 1000f);
-            R = new Spell(SpellSlot.R, 1400f);
+            R = new Spell(SpellSlot.R, 1500f);
 
-            Q.SetSkillshot(0.25f, 30f, 1700f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 40f, 1200f, true, SkillshotType.SkillshotLine);
 
             var drawDamageMenu = new MenuItem("Draw_RDamage", "Draw (E) Damage", true).SetValue(true);
             var drawFill = new MenuItem("Draw_Fill", "Draw (E) Damage Fill", true).SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
@@ -148,9 +148,9 @@ namespace Sharpshooter.Champions
             {
                 if (sender.Type == GameObjectType.obj_AI_Hero && sender.IsEnemy)
                 {
-                    var soulboundhero = HeroManager.Allies.FirstOrDefault(hero => hero.HasBuff("kalistacoopstrikeally", true) && args.Target.NetworkId == hero.NetworkId && hero.HealthPercentage() <= 15);
+                    var soulboundhero = HeroManager.Allies.FirstOrDefault(hero => hero.HasBuff("kalistacoopstrikeally", true) && args.Target.NetworkId == hero.NetworkId && hero.HealthPercent <= 15);
 
-                    if (R.CanCast(soulboundhero))
+                    if (soulboundhero != null)
                         R.Cast();
                 }
             }
