@@ -80,9 +80,9 @@ namespace Sharpshooter
                 case "Twitch":
                     Champions.Twitch.Load();
                     break;
-                case "Vayne":
-                    Champions.Vayne.Load();
-                    break;
+                //case "Vayne":
+                //    Champions._Vayne.Load();
+                //    break;
                 default:
                     break;
             }

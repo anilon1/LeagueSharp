@@ -8,7 +8,7 @@ using Color = System.Drawing.Color;
 
 namespace Sharpshooter.Champions
 {
-    public static class Vayne
+    public static class _Vayne
     {
         static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         static Orbwalking.Orbwalker Orbwalker { get { return SharpShooter.Orbwalker; } }
