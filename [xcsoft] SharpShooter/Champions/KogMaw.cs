@@ -31,10 +31,10 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 900f);
+            Q = new Spell(SpellSlot.Q, 900f) { MinHitChance = HitChance.High };
             W = new Spell(SpellSlot.W);
-            E = new Spell(SpellSlot.E, 1200f);
-            R = new Spell(SpellSlot.R);
+            E = new Spell(SpellSlot.E, 1200f) { MinHitChance = HitChance.High };
+            R = new Spell(SpellSlot.R) { MinHitChance = HitChance.High };
 
             Q.SetSkillshot(0.25f, 60f, 1650f, true, SkillshotType.SkillshotLine);
             E.SetSkillshot(0.25f, 110f, 1400f, false, SkillshotType.SkillshotLine);
@@ -159,7 +159,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if (Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
 
@@ -175,7 +175,7 @@ namespace Sharpshooter.Champions
             {
                 var Etarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (E.CanCast(Etarget) && E.GetPrediction(Etarget).Hitchance >= HitChance.VeryHigh)
+                if (E.CanCast(Etarget) )
                     E.Cast(Etarget);
             }
 
@@ -198,7 +198,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if (Q.CanCast(Qtarget) )
                 {
                     Q.Cast(Qtarget);
                     return;
@@ -217,7 +217,7 @@ namespace Sharpshooter.Champions
             {
                 var Etarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical, true);
 
-                if (E.CanCast(Etarget) && E.GetPrediction(Etarget).Hitchance >= HitChance.VeryHigh)
+                if (E.CanCast(Etarget) )
                 {
                     E.Cast(Etarget);
                     return;

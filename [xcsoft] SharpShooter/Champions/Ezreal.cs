@@ -17,8 +17,8 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 1180f);
-            W = new Spell(SpellSlot.W, 850f);
+            Q = new Spell(SpellSlot.Q, 1180f) { MinHitChance = HitChance.High };
+            W = new Spell(SpellSlot.W, 850f) { MinHitChance = HitChance.High };
             E = new Spell(SpellSlot.E, 475f);
             R = new Spell(SpellSlot.R, 2500f);
 
@@ -227,13 +227,13 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if (W.CanCast(Wtarget) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
+                if (W.CanCast(Wtarget) )
                     W.Cast(Wtarget);
             }
 
             if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>())
             {
-                foreach (var Rtarget in HeroManager.Enemies.Where(x => R.CanCast(x) && R.GetPrediction(x).Hitchance >= HitChance.VeryHigh))
+                foreach (var Rtarget in HeroManager.Enemies.Where(x => R.CanCast(x) ))
                 {
                     if (R.CanCast(Rtarget) && !Rtarget.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)))
                         R.CastIfWillHit(Rtarget, 2);
@@ -258,7 +258,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if (W.CanCast(Wtarget) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
+                if (W.CanCast(Wtarget) )
                     W.Cast(Wtarget);
             }
         }

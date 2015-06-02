@@ -19,9 +19,9 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 1300f);
+            Q = new Spell(SpellSlot.Q, 1300f) { MinHitChance = HitChance.High };
             W = new Spell(SpellSlot.W, 800f);
-            E = new Spell(SpellSlot.E, 1000f);
+            E = new Spell(SpellSlot.E, 1000f) { MinHitChance = HitChance.High };
             R = new Spell(SpellSlot.R);
 
             Q.SetSkillshot(0.625f, 90f, 2200f, false, SkillshotType.SkillshotLine);
@@ -226,7 +226,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if(Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if(Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
 
@@ -234,7 +234,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = W_GetBestTarget();
 
-                if (W.CanCast(Wtarget)  && !Wtarget.HasBuffOfType(BuffType.SpellImmunity) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
+                if (W.CanCast(Wtarget)  && !Wtarget.HasBuffOfType(BuffType.SpellImmunity) )
                     W.Cast(Wtarget);
             }
                 
@@ -257,7 +257,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if (Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
                 
