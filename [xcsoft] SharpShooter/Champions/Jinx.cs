@@ -32,13 +32,13 @@ namespace Sharpshooter.Champions
         public static void Load()
         {
             Q = new Spell(SpellSlot.Q);
-            W = new Spell(SpellSlot.W, 1450f);
+            W = new Spell(SpellSlot.W, 1450f) { MinHitChance = HitChance.High };
             E = new Spell(SpellSlot.E, 900f);
-            R = new Spell(SpellSlot.R, 2500f);
+            R = new Spell(SpellSlot.R, 2500f) { MinHitChance = HitChance.High };
 
             W.SetSkillshot(0.6f, 60f, 3300f, true, SkillshotType.SkillshotLine);
             E.SetSkillshot(1.2f, 1f, 1750f, false, SkillshotType.SkillshotCircle);
-            R.SetSkillshot(0.6f, 140f, 1700f, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(0.5f, 140f, 1700f, false, SkillshotType.SkillshotLine);
 
             var drawDamageMenu = new MenuItem("Draw_RDamage", "Draw (R) Damage", true).SetValue(true);
             var drawFill = new MenuItem("Draw_Fill", "Draw (R) Damage Fill", true).SetValue(new Circle(true, Color.FromArgb(90, 255, 169, 4)));
@@ -232,7 +232,7 @@ namespace Sharpshooter.Champions
             foreach (Obj_AI_Hero target in HeroManager.Enemies.Where(x => x.IsValidTarget(E.Range)))
             {
                 if (E.CanCast(target) && UnitIsImmobileUntil(target) >= E.Delay - 0.5)
-                    E.Cast(target);
+                    E.Cast(target, false, true);
             }
         }
 
@@ -272,7 +272,7 @@ namespace Sharpshooter.Champions
             float damage = 0;
 
             if (R.IsReady())
-                damage += R.GetDamage(enemy);
+                damage += (float)(new double[] { 25, 30, 35 }[R.Level] / 100 * (enemy.MaxHealth - enemy.Health) + ((new double[] { 25, 35, 45 }[R.Level] + 0.1 * Player.FlatPhysicalDamageMod) * Math.Min((1 + Player.Distance(enemy.ServerPosition) / 15 * 0.09d), 10)));
 
             return damage;
         }
@@ -294,7 +294,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if (W.CanCast(Wtarget) && !Wtarget.IsValidTarget(DefaultRange / 3) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
+                if (W.CanCast(Wtarget) && !Wtarget.IsValidTarget(DefaultRange / 3) )
                     W.Cast(Wtarget);
             }
 
@@ -302,46 +302,24 @@ namespace Sharpshooter.Champions
             {
                 var Etarget = E_GetBestTarget();
 
-                if (E.CanCast(Etarget))
-                    E.Cast(Etarget);
+                if (Etarget != null)
+                    E.Cast(Etarget, false, true);
                     
             }
 
-            if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>() && R.IsReady() && WLastCastedTime + 1.0 < Game.ClockTime)
+            if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>() && R.IsReady() && WLastCastedTime + 1.0 < Game.ClockTime && !Player.IsWindingUp)
             {
-                foreach (Obj_AI_Hero Rtarget in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsValidTarget(DefaultRange) && !Player.HasBuffOfType(BuffType.SpellShield) && !Player.HasBuffOfType(BuffType.Invulnerability) && R.GetPrediction(x).Hitchance >= HitChance.High && Utility.GetAlliesInRange(x, 800).Where(ally => !ally.IsMe).Count() <= 1))
+                foreach (Obj_AI_Hero Rtarget in HeroManager.Enemies.Where(x => CollisionCheck(Player, x, R.Width) && x.IsValidTarget(R.Range) && !x.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)) && !Player.HasBuffOfType(BuffType.SpellShield) && !Player.HasBuffOfType(BuffType.Invulnerability) && R.GetPrediction(x).Hitchance >= HitChance.High && Utility.GetAlliesInRange(x, 800).Where(ally => !ally.IsMe).Count() <= 1))
                 {
-                    if (R.CanCast(Rtarget) && !Player.IsWindingUp)
+                    var dis = Player.Distance(Rtarget.ServerPosition);
+                    double predhealth = HealthPrediction.GetHealthPrediction(Rtarget, (int)(R.Delay + dis / R.Speed) * 1000) + Rtarget.HPRegenRate;
+
+                    var RDamage = (new double[] { 25, 30, 35 }[R.Level] / 100 * (Rtarget.MaxHealth - Rtarget.Health) + ((new double[] { 25, 35, 45 }[R.Level] + 0.1 * Player.FlatPhysicalDamageMod) * Math.Min((1 + Player.Distance(Rtarget.ServerPosition) / 15 * 0.09d), 10)));
+
+                    if (predhealth <= RDamage)
                     {
-                        var dis = Player.Distance(Rtarget.ServerPosition);
-                        double predhealth = HealthPrediction.GetHealthPrediction(Rtarget, (int)(R.Delay + dis / R.Speed) * 1000) + Rtarget.HPRegenRate;
-
-                        if(Rtarget.IsValidTarget(DefaultRange))
-                            predhealth -= Player.GetAutoAttackDamage(Rtarget, true) * 2;
-                        else
-                        if (Rtarget.IsValidTarget(GetQActiveRange - 50))
-                            predhealth -= Player.GetAutoAttackDamage(Rtarget, true);
-
-                        if (CollisionCheck(Player, Rtarget, R.Width))
-                        {
-                            if (predhealth <= R.GetDamage(Rtarget))
-                            {
-                                R.Cast(Rtarget);
-                                break;
-                            }
-                        }
-                        else
-                            if (predhealth <= R.GetDamage(Rtarget) * 0.8)
-                            {
-                                foreach (Obj_AI_Hero ExplosionTarget in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range)))
-                                {
-                                    if (R.GetPrediction(ExplosionTarget).Hitchance >= HitChance.High && CollisionCheck(Player, ExplosionTarget, R.Width) && Rtarget.IsValidTarget(224, true, ExplosionTarget.ServerPosition))
-                                    {
-                                        R.Cast(ExplosionTarget);
-                                        break;
-                                    }
-                                }
-                            }
+                        R.Cast(Rtarget);
+                        break;
                     }
                 }
             }
@@ -367,7 +345,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if (W.CanCast(Wtarget) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
+                if (W.CanCast(Wtarget) )
                     W.Cast(Wtarget);
             }
         }

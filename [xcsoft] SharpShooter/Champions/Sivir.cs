@@ -17,7 +17,7 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 1245f);
+            Q = new Spell(SpellSlot.Q, 1245f) { MinHitChance = HitChance.High };
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E);
             R = new Spell(SpellSlot.R, 1000f);
@@ -159,7 +159,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if (Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
         }
@@ -173,7 +173,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh)
+                if (Q.CanCast(Qtarget) )
                     Q.Cast(Qtarget);
             }
         }

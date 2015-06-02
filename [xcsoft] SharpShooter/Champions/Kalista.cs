@@ -19,7 +19,7 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 1150f);
+            Q = new Spell(SpellSlot.Q, 1150f) { MinHitChance = HitChance.High};
             W = new Spell(SpellSlot.W, 5000f);
             E = new Spell(SpellSlot.E, 1000f);
             R = new Spell(SpellSlot.R, 1500f);
@@ -141,16 +141,16 @@ namespace Sharpshooter.Champions
 
         static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe && args.SData.Name == "KalistaExpungeWrapper")
+            if (sender.IsMe && args.SData.Name == E.Instance.Name)
                     Utility.DelayAction.Add(250, Orbwalking.ResetAutoAttackTimer);
 
             if (SharpShooter.Menu.Item("soulboundsaver", true).GetValue<Boolean>() && R.IsReady())
             {
                 if (sender.Type == GameObjectType.obj_AI_Hero && sender.IsEnemy)
                 {
-                    var soulboundhero = HeroManager.Allies.FirstOrDefault(hero => hero.HasBuff("kalistacoopstrikeally", true) && args.Target.NetworkId == hero.NetworkId && hero.HealthPercent <= 15);
+                    var soulbound = HeroManager.Allies.FirstOrDefault(hero => hero.HasBuff("kalistacoopstrikeally", true) && args.Target.NetworkId == hero.NetworkId && hero.HealthPercent <= 20);
 
-                    if (soulboundhero != null)
+                    if (soulbound != null)
                         R.Cast();
                 }
             }
@@ -226,7 +226,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh && !Player.IsWindingUp && !Player.IsDashing())
+                if (Q.CanCast(Qtarget)  && !Player.IsWindingUp && !Player.IsDashing())
                     Q.Cast(Qtarget);
             }
 
@@ -248,7 +248,7 @@ namespace Sharpshooter.Champions
             {
                 var Qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical, true);
 
-                if (Q.CanCast(Qtarget) && Q.GetPrediction(Qtarget).Hitchance >= HitChance.VeryHigh && !Player.IsWindingUp && !Player.IsDashing())
+                if (Q.CanCast(Qtarget)  && !Player.IsWindingUp && !Player.IsDashing())
                     Q.Cast(Qtarget);
             }
         }
