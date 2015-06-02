@@ -19,10 +19,10 @@ namespace Sharpshooter.Champions
 
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 720f) { MinHitChance = HitChance.High };
+            Q = new Spell(SpellSlot.Q, 720f);
             W = new Spell(SpellSlot.W, 850f);
             E = new Spell(SpellSlot.E, 425f);
-            R = new Spell(SpellSlot.R, 1100f) { MinHitChance = HitChance.High };
+            R = new Spell(SpellSlot.R, 1100f);
 
             Q.SetSkillshot(0.25f, 15f * (float)Math.PI / 180, 2000f, false, SkillshotType.SkillshotCone);
             W.SetSkillshot(0.25f, 250f, 1650f, false, SkillshotType.SkillshotCircle);
@@ -173,7 +173,7 @@ namespace Sharpshooter.Champions
         {
             if (SharpShooter.Menu.Item("comboUseR", true).GetValue<Boolean>() && R.IsReady())
             {
-                var Rtarget = HeroManager.Enemies.Where(x => R.CanCast(x) && x.Health + (x.HPRegenRate / 2) <= R.GetDamage(x) ).OrderByDescending(x => x.Health).FirstOrDefault();
+                var Rtarget = HeroManager.Enemies.Where(x => R.CanCast(x) && x.Health + (x.HPRegenRate / 2) <= R.GetDamage(x) && R.GetPrediction(x).Hitchance >= HitChance.VeryHigh).OrderByDescending(x => x.Health).FirstOrDefault();
 
                 if (R.CanCast(Rtarget))
                     R.Cast(Rtarget);

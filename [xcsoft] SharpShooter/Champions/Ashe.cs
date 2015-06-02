@@ -17,14 +17,16 @@ namespace Sharpshooter.Champions
 
         static Spell Q, W, E, R;
 
+        static bool QisActive { get { return Player.HasBuff("FrostShot", true); } }
+
         public static void Load()
         {
-            Q = new Spell(SpellSlot.Q, 650f);
+            Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 1200f);
             E = new Spell(SpellSlot.E);
             R = new Spell(SpellSlot.R, 2500f);
 
-            W.SetSkillshot(0.25f, 90f, 2000f, true, SkillshotType.SkillshotLine);
+            W.SetSkillshot(0.25f, 24.32f * (float)(Math.PI / 180), 902f, true, SkillshotType.SkillshotCone);
             R.SetSkillshot(0.25f, 130f, 1600f, false, SkillshotType.SkillshotLine);
 
             SharpShooter.Menu.SubMenu("Combo").AddItem(new MenuItem("comboUseQ", "Use Q", true).SetValue(true));
@@ -47,6 +49,7 @@ namespace Sharpshooter.Champions
 
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingAA", "Real AA Range", true).SetValue(new Circle(true, Color.DodgerBlue)));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingW", "W Range", true).SetValue(new Circle(true, Color.DodgerBlue)));
+            SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingE", "E Range", true).SetValue(new Circle(true, Color.DodgerBlue)));
             SharpShooter.Menu.SubMenu("Drawings").AddItem(new MenuItem("drawingR", "R Range", true).SetValue(new Circle(true, Color.DodgerBlue)));
 
             Game.OnUpdate += Game_OnUpdate;
@@ -83,6 +86,7 @@ namespace Sharpshooter.Champions
 
             var drawingAA = SharpShooter.Menu.Item("drawingAA", true).GetValue<Circle>();
             var drawingW = SharpShooter.Menu.Item("drawingW", true).GetValue<Circle>();
+            var drawingE = SharpShooter.Menu.Item("drawingE", true).GetValue<Circle>();
             var drawingR = SharpShooter.Menu.Item("drawingR", true).GetValue<Circle>();
 
             if (drawingAA.Active)
@@ -90,6 +94,11 @@ namespace Sharpshooter.Champions
 
             if (W.IsReady() && drawingW.Active)
                 Render.Circle.DrawCircle(Player.Position, W.Range, drawingW.Color);
+
+            if (E.IsReady() && drawingE.Active)
+            {
+                Render.Circle.DrawCircle(Player.Position, 1750 + (E.Level * 750), drawingE.Color);
+            }
                 
             if (R.IsReady() && drawingR.Active)
                 Render.Circle.DrawCircle(Player.Position, Orbwalking.GetRealAutoAttackRange(Player)+50, drawingR.Color);
@@ -97,7 +106,7 @@ namespace Sharpshooter.Champions
 
         static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            if (args.Target is Obj_AI_Hero && Player.HasBuff("asheqcastready"))
+            if (args.Target is Obj_AI_Hero && !QisActive)
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && SharpShooter.Menu.Item("comboUseQ", true).GetValue<Boolean>())
                     Q.Cast();
@@ -105,6 +114,10 @@ namespace Sharpshooter.Champions
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && SharpShooter.Menu.Item("harassUseQ", true).GetValue<Boolean>())
                     Q.Cast();
             }
+
+            if (!(args.Target is Obj_AI_Hero) && QisActive)
+                Q.Cast();
+
         }
 
         static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
@@ -186,7 +199,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if(W.CanCast(Wtarget))
+                if(W.CanCast(Wtarget) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
                     W.Cast(Wtarget);
             }
                 
@@ -209,7 +222,7 @@ namespace Sharpshooter.Champions
             {
                 var Wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical, true);
 
-                if(W.CanCast(Wtarget) )
+                if(W.CanCast(Wtarget) && W.GetPrediction(Wtarget).Hitchance >= HitChance.VeryHigh)
                     W.Cast(Wtarget);
             }
         }
