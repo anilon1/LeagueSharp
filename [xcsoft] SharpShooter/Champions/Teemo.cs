@@ -19,7 +19,7 @@ namespace Sharpshooter.Champions
         {
             Q = new Spell(SpellSlot.Q, 680f);
             W = new Spell(SpellSlot.W);
-            R = new Spell(SpellSlot.R, 230f) { MinHitChance = HitChance.Medium };
+            R = new Spell(SpellSlot.R, 230f);
 
             R.SetSkillshot(0.25f, 75f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
